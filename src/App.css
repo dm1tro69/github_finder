@@ -375,6 +375,9 @@ table th {
 .navbar .welcome span {
   margin-right: 0.6rem;
 }
+.aclink {
+  border-bottom: 1px solid white;
+}
 
 /* Mobile Styles */
 @media (max-width: 700px) {

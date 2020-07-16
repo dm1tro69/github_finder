@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {NavLink} from "react-router-dom";
 
 const Navbar = ({icon, title}) => {
 
@@ -11,6 +12,10 @@ const Navbar = ({icon, title}) => {
               <h1>
                   <i className={icon}/>{title}
               </h1>
+                <ul>
+                    <li><NavLink activeClassName={'aclink'} exact to="/">Home</NavLink></li>
+                    <li><NavLink activeClassName={'aclink'} exact to="/about">About</NavLink></li>
+                </ul>
             </nav>
         )
 
