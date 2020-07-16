@@ -1,23 +1,20 @@
-import React, {Component, Fragment} from 'react'
+import React, {useEffect, Fragment} from 'react'
 import Proptypes from 'prop-types'
 import Spinner from "../layout/Spinner";
 import {Link} from "react-router-dom";
 import Repos from "../repos/Repos";
 
-export default class User extends Component{
+const User = ({user, loading, getUser, repos, match, getUserRepos}) => {
+    useEffect(() => {
+        getUser(match.params.login)
+        getUserRepos(match.params.login)
+        //eslint-disable-next-line
+    }, [])
 
-    componentDidMount() {
-        this.props.getUser(this.props.match.params.login)
-        this.props.getUserRepos(this.props.match.params.login)
-    }
-    static propTypes = {
-        loading: Proptypes.bool,
-        user: Proptypes.object,
-        getUser: Proptypes.func,
-        getUserRepos: Proptypes.func
-    }
 
-    render() {
+
+
+
         const {
             name,
             avatar_url,
@@ -32,8 +29,8 @@ export default class User extends Component{
             public_gists,
             company,
             hireable
-        } =this.props.user
-        const {loading, repos} = this.props
+        } = user
+
         if(loading){
             return <Spinner/>
         }
@@ -90,6 +87,13 @@ export default class User extends Component{
             )
 
 
-    }
+
 
 }
+User.propTypes = {
+    loading: Proptypes.bool,
+    user: Proptypes.object,
+    getUser: Proptypes.func,
+    getUserRepos: Proptypes.func
+}
+export default User

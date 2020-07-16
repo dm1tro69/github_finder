@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {useState} from 'react'
 import './App.css'
 import axios from 'axios'
 import Navbar from "./components/layout/Navbar";
@@ -15,72 +15,73 @@ const github = axios.create({
     headers: { Authorization: process.env.REACT_APP_SECRET_NAME }
 })
 
-class App extends Component{
+const App = () => {
 
-    state = {
-        users: [],
-        user: {},
-        loading: false,
-        alert: null,
-        repos: []
-    }
+    const [users, setUsers] = useState([]);
+    const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [alert, setAlerts] = useState(null);
+    const [repos, setRepos] = useState([]);
 
 
 
-     // async componentDidMount() {
-     //    this.setState({loading: true})
-     //   const res = await github.get('/users')
-     //     this.setState({users: res.data, loading: false})
-     // }
 
     // Search Github users
-    searchUsers = async (text) => {
-         this.setState({loading: true})
+    const searchUsers = async (text) => {
+         setLoading(true)
         const res = await github.get(`/search/users?q=${text}`)
-        this.setState({users: res.data.items, loading: false})
+        setUsers(res.data.items)
+        setLoading(false)
+
     }
 
     //Clear users from state
-    clearUsers = () => {
-       this.setState({users: [], loading: false})
+    const clearUsers = () => {
+        setLoading(false)
+        setUsers([])
+
     }
 
     //Set alert
-    setAlert = (msg, type) => {
-        this.setState({alert: {msg, type}})
-        setTimeout(() => this.setState({alert: null}), 5000)
+    const setAlert = (msg, type) => {
+        setAlerts({msg, type})
+        setTimeout(() => setAlerts(null), 5000)
     }
 
     //Get single Github user
-    getUser = async (username) => {
-        this.setState({loading: true})
+    const getUser = async (username) => {
+        setLoading(true)
         const res = await github.get(`/users/${username}`)
-        this.setState({user: res.data, loading: false})
+        setLoading(false)
+        setUser(res.data)
+
     }
 
     //Get users repos
-    getUserRepos = async (username) => {
+    const getUserRepos = async (username) => {
         this.setState({loading: true})
         const res = await github.get(`/users/${username}/repos?per_page=5&sort=created:asc?`)
-        this.setState({repos: res.data, loading: false})
+        setLoading(false)
+        setRepos(res.data)
+
     }
 
 
-    render() {
-        const {users, user, loading, repos} = this.state
+
+
         return(
             <div className={'App'}>
               <Navbar/>
               <div className="container">
-                  <Alert alert={this.state.alert}/>
+                  <Alert alert={alert}/>
                   <Switch>
                       <Route path={'/'} exact render={props => (
                           <React.Fragment>
                               <Search
-                                  setAlert={this.setAlert}
+                                  setAlert={setAlert}
                                   showClear={users.length > 0 ? true: false}
-                                  clearUsers={this.clearUsers}
-                                  searchUsers={this.searchUsers}
+                                  clearUsers={clearUsers}
+                                  searchUsers={searchUsers}
                               />
                               <Users
                                   users={users}
@@ -91,10 +92,10 @@ class App extends Component{
                       <Route path={'/user/:login'} render={props => (
                           <User
                               {...props}
-                              getUser={this.getUser}
+                              getUser={getUser}
                               user={user}
                               loading={loading}
-                              getUserRepos={this.getUserRepos}
+                              getUserRepos={getUserRepos}
                               repos={repos}
                           />
                       )}/>
@@ -104,7 +105,7 @@ class App extends Component{
 
             </div>
         )
-    }
+
 
 }
 export default App
